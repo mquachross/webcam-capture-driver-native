@@ -121,7 +121,14 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
 
         final int width = resolution.width;
         final int height = resolution.height;
-        final int startResult = lib.cnokhwa_start_capture(deviceIndex, width, height);
+        int startResult = lib.cnokhwa_start_capture(deviceIndex, width, height);
+
+        if (startResult == -4)
+        {
+            LOG.info("Restarting device {} after disconnection", id);
+            lib.cnokhwa_stop_capture(deviceIndex);
+            startResult = lib.cnokhwa_start_capture(deviceIndex, width, height);
+        }
 
         if (startResult < 0) {
             LOG.error("Error capture start result for device {} = {}", id, startResult);

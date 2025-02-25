@@ -122,13 +122,19 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
 
         final int width = resolution.width;
         final int height = resolution.height;
-        final int startResult = lib.vcavf_start_capture(deviceIndex, width, height);
+        int startResult = lib.vcavf_start_capture(deviceIndex, width, height);
 
-        if (startResult < 0) {
-            LOG.warn("Capture start result for device {} = {}", id, startResult);
-            return;
+        if (startResult == -4)
+        {
+            LOG.info("Restarting device {} after disconnection", id);
+            lib.vcavf_stop_capture(deviceIndex);
+            startResult = lib.vcavf_start_capture(deviceIndex, width, height);
         }
 
+        if (startResult < 0) {
+            LOG.warn("Error capture start result for device {} = {}", id, startResult);
+            return;
+        }
     
         this.open = true;
         this.bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
