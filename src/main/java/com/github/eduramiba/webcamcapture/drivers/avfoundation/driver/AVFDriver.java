@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import com.github.sarxos.webcam.WebcamDevice;
 import com.github.sarxos.webcam.WebcamDriver;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 
 public class AVFDriver implements WebcamDriver {
 
@@ -19,7 +20,7 @@ public class AVFDriver implements WebcamDriver {
 
     @Override
     public synchronized List<WebcamDevice> getDevices() {
-        final var lib = LibVideoCapture.INSTANCE;
+        final LibVideoCapture lib = LibVideoCapture.INSTANCE;
 
         final List<WebcamDevice> list = new ArrayList<>();
 
@@ -61,25 +62,25 @@ public class AVFDriver implements WebcamDriver {
     }
 
     private static String deviceUniqueId(final int deviceIndex) {
-        final var bufferP = Native.getDirectBufferPointer(buffer);
+        final Pointer bufferP = Native.getDirectBufferPointer(buffer);
         LibVideoCapture.INSTANCE.vcavf_get_device_unique_id(deviceIndex, bufferP, buffer.capacity());
         return bufferP.getString(0, StandardCharsets.UTF_8.name());
     }
 
     private static String deviceModelId(final int deviceIndex) {
-        final var bufferP = Native.getDirectBufferPointer(buffer);
+        final Pointer bufferP = Native.getDirectBufferPointer(buffer);
         LibVideoCapture.INSTANCE.vcavf_get_device_model_id(deviceIndex, bufferP, buffer.capacity());
         return bufferP.getString(0, StandardCharsets.UTF_8.name());
     }
 
     private static String deviceName(final int deviceIndex) {
-        final var bufferP = Native.getDirectBufferPointer(buffer);
+        final Pointer bufferP = Native.getDirectBufferPointer(buffer);
         LibVideoCapture.INSTANCE.vcavf_get_device_name(deviceIndex, bufferP, buffer.capacity());
         return bufferP.getString(0, StandardCharsets.UTF_8.name());
     }
 
     private static String deviceFormat(final int deviceIndex, final int formatIndex) {
-        final var bufferP = Native.getDirectBufferPointer(buffer);
+        final Pointer bufferP = Native.getDirectBufferPointer(buffer);
         LibVideoCapture.INSTANCE.vcavf_get_device_format(deviceIndex, formatIndex, bufferP, buffer.capacity());
         return bufferP.getString(0, StandardCharsets.UTF_8.name());
     }

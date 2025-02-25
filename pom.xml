@@ -374,7 +374,7 @@
         <profile>
             <id>check-error-prone</id>
             <activation>
-                <jdk>[11,17)</jdk>
+                <jdk>[8,17)</jdk>
             </activation>
             <build>
                 <plugins>

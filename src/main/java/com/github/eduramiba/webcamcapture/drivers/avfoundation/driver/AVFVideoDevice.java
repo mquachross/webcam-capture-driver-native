@@ -109,7 +109,7 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
             return;
         }
 
-        final var lib = LibVideoCapture.INSTANCE;
+        final LibVideoCapture lib = LibVideoCapture.INSTANCE;
         final int authStatus = lib.vcavf_has_videocapture_auth();
 
         if (authStatus != STATUS_AUTHORIZED) {
@@ -261,7 +261,7 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
                 // Init buffer if still not initialized:
                 this.bytesPerRow = LibVideoCapture.INSTANCE.vcavf_frame_bytes_per_row(deviceIndex);
 
-                final var bufferSizeBytes = bytesPerRow * resolution.height;
+                final int bufferSizeBytes = bytesPerRow * resolution.height;
                 this.imgBuffer = ByteBuffer.allocateDirect(bufferSizeBytes);
                 this.arrayByteBuffer = new byte[imgBuffer.capacity()];
             }

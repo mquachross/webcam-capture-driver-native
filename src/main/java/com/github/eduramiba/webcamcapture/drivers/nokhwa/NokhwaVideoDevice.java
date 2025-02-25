@@ -108,7 +108,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
             return;
         }
 
-        final var lib = LibNokhwa.INSTANCE;
+        final LibNokhwa lib = LibNokhwa.INSTANCE;
         final int authStatus = lib.cnokhwa_has_videocapture_auth();
 
         if (authStatus != STATUS_AUTHORIZED) {
@@ -256,7 +256,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
                 // Init buffer if still not initialized:
                 this.bytesPerRow = LibNokhwa.INSTANCE.cnokhwa_frame_bytes_per_row(deviceIndex);
 
-                final var bufferSizeBytes = bytesPerRow * resolution.height;
+                final int bufferSizeBytes = bytesPerRow * resolution.height;
                 this.imgBuffer = ByteBuffer.allocateDirect(bufferSizeBytes);
                 this.arrayByteBuffer = new byte[imgBuffer.capacity()];
 

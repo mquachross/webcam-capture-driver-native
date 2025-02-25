@@ -3,6 +3,7 @@ package com.github.eduramiba.webcamcapture.drivers.nokhwa;
 import com.github.sarxos.webcam.WebcamDevice;
 import com.github.sarxos.webcam.WebcamDriver;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ public class NokhwaDriver implements WebcamDriver {
 
     @Override
     public synchronized List<WebcamDevice> getDevices() {
-        final var lib = LibNokhwa.INSTANCE;
+        final LibNokhwa lib = LibNokhwa.INSTANCE;
 
         final List<WebcamDevice> list = new ArrayList<>();
 
@@ -86,19 +87,19 @@ public class NokhwaDriver implements WebcamDriver {
     }
 
     private static String deviceUniqueId(final int deviceIndex) {
-        final var bufferP = Native.getDirectBufferPointer(buffer);
+        final Pointer bufferP = Native.getDirectBufferPointer(buffer);
         LibNokhwa.INSTANCE.cnokhwa_device_unique_id(deviceIndex, bufferP, buffer.capacity());
         return bufferP.getString(0, StandardCharsets.UTF_8.name());
     }
 
     private static String deviceName(final int deviceIndex) {
-        final var bufferP = Native.getDirectBufferPointer(buffer);
+        final Pointer bufferP = Native.getDirectBufferPointer(buffer);
         LibNokhwa.INSTANCE.cnokhwa_device_name(deviceIndex, bufferP, buffer.capacity());
         return bufferP.getString(0, StandardCharsets.UTF_8.name());
     }
 
     private static String deviceFormatType(final int deviceIndex, final int formatIndex) {
-        final var bufferP = Native.getDirectBufferPointer(buffer);
+        final Pointer bufferP = Native.getDirectBufferPointer(buffer);
         LibNokhwa.INSTANCE.cnokhwa_device_format_type(deviceIndex, formatIndex, bufferP, buffer.capacity());
         return bufferP.getString(0, StandardCharsets.UTF_8.name());
     }
