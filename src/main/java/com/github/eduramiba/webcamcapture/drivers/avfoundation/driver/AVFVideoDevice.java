@@ -216,6 +216,14 @@ public class AVFVideoDevice implements WebcamDeviceExtended {
         updateBuffer();
         updateBufferedImage();
 
+        /* Construct new bufferedImage since WebcamPanel expects a new bufferedImage in order to repaint */
+        final int width = resolution.width;
+        final int height = resolution.height;
+        BufferedImage updatedBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
+        updatedBufferedImage.setData(bufferedImage.getRaster());
+        bufferedImage = updatedBufferedImage;
+        bufferedImage.flush();
+
         return bufferedImage;
     }
 
