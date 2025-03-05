@@ -255,7 +255,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         
         final PixelWriter pw = writableImage.getPixelWriter();
 
-        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
+        final ByteBuffer readBuffer = (ByteBuffer) imgBuffer.asReadOnlyBuffer().position(0);
         pw.setPixels(
             0, 0, videoWidth, videoHeight,
             PixelFormat.getByteRgbInstance(), readBuffer, bytesPerRow
@@ -312,7 +312,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
             new int[]{0, 1, 2}
         );
 
-        final ByteBuffer readBuffer = imgBuffer.asReadOnlyBuffer().position(0);
+        final ByteBuffer readBuffer = (ByteBuffer) imgBuffer.asReadOnlyBuffer().position(0);
         readBuffer.get(arrayByteBuffer, 0, readBuffer.capacity());
 
         final DataBuffer dataBuffer = new DataBufferByte(arrayByteBuffer, arrayByteBuffer.length);
