@@ -75,7 +75,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
 
     @Override
     public String getName() {
-        return name + " " + deviceIndex;
+        return name + " " + (1 + deviceIndex);
     }
 
     @Override
