@@ -13,6 +13,8 @@ import java.awt.image.*;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.github.eduramiba.webcamcapture.drivers.nokhwa.LibNokhwa.*;
 
@@ -26,6 +28,8 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     private final Dimension[] resolutions;
     private Dimension resolution;
     private final int maxFps;
+    private String vid;
+    private String pid;
 
     //State:
     private boolean open = false;
@@ -42,6 +46,9 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         this.resolutions = resolutions != null ? resolutions.toArray(new Dimension[0]) : new Dimension[0];
         this.resolution = bestResolution(this.resolutions);
         this.maxFps = maxFps;
+        this.vid = "";
+        this.pid = "";
+        initVidPid();
     }
 
     public boolean isValid() {
@@ -74,8 +81,9 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     }
 
     @Override
-    public String getName() {
-        return name + " " + (1 + deviceIndex);
+    public String getName()
+    {
+        return String.format("%s (VID: %s, PID: %s)", name, vid, pid);
     }
 
     @Override
@@ -329,5 +337,23 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     public boolean removeCustomEventsListener(Listener listener) {
         // NOOP
         return true;
+    }
+
+    private void initVidPid()
+    {
+        if (this.id == null)
+        {
+            return;
+        }
+
+        final String regex = "vid_([0-9a-fA-F]{4})\\&pid_([0-9a-fA-F]{4})";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(this.id);
+
+        if (matcher.find())
+        {
+            vid = matcher.group(1);
+            pid = matcher.group(2);
+        }
     }
 }
