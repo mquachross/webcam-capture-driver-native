@@ -30,6 +30,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     private final int maxFps;
     private String vid;
     private String pid;
+    private String instanceID;
 
     //State:
     private boolean open = false;
@@ -48,7 +49,8 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         this.maxFps = maxFps;
         this.vid = "";
         this.pid = "";
-        initVidPid();
+        this.instanceID = "";
+        initUniqueID();
     }
 
     public boolean isValid() {
@@ -83,7 +85,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
     @Override
     public String getName()
     {
-        return String.format("%s (VID: %s, PID: %s)", name, vid, pid);
+        return String.format("%s (VID: %s, PID: %s, Instance: %s)", name, vid, pid, instanceID);
     }
 
     @Override
@@ -339,14 +341,14 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         return true;
     }
 
-    private void initVidPid()
+    private void initUniqueID()
     {
         if (this.id == null)
         {
             return;
         }
 
-        final String regex = "vid_([0-9a-fA-F]{4})\\&pid_([0-9a-fA-F]{4})";
+        final String regex = "vid_([0-9a-fA-F]{4})\\&pid_([0-9a-fA-F]{4})\\&[\\w]*#([0-9a-fA-F\\&]*)#";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.id);
 
@@ -354,6 +356,7 @@ public class NokhwaVideoDevice implements WebcamDeviceExtended {
         {
             vid = matcher.group(1);
             pid = matcher.group(2);
+            instanceID = matcher.group(3);
         }
     }
 }
