@@ -24,11 +24,16 @@ public class NokhwaDriver implements WebcamDriver {
 
     private static final ByteBuffer buffer = ByteBuffer.allocateDirect(255);
 
+    private static final Map<String, Integer> deviceNames = new HashMap<>();
+
+    private static final Map<String, String> previousDevices = new HashMap<>();
+
     @Override
     public synchronized List<WebcamDevice> getDevices() {
         final LibNokhwa lib = LibNokhwa.INSTANCE;
-
         final List<WebcamDevice> list = new ArrayList<>();
+
+        deviceNames.clear();
 
         if (lib.cnokhwa_initialize() != RESULT_OK) {
             LOG.error("Error initializing native library");
@@ -47,7 +52,31 @@ public class NokhwaDriver implements WebcamDriver {
 
         for (int devIndex = 0; devIndex < devicesCount; devIndex++) {
             final String uniqueId = deviceUniqueId(devIndex);
-            final String name = deviceName(devIndex);
+
+            String name;
+            if (previousDevices.containsKey(uniqueId))
+            {
+                name = previousDevices.get(uniqueId);
+            }
+            else
+            {
+                name = deviceName(devIndex);
+                if (deviceNames.containsKey(name))
+                {
+                    int currentNum = deviceNames.get(name);
+                    while (previousDevices.containsValue(name))
+                    {
+                        deviceNames.put(name, ++currentNum);
+                        name = name + " " + currentNum;
+                    }
+                }
+                else
+                {
+                    deviceNames.put(name, 0);
+                }
+
+                previousDevices.put(uniqueId, name);
+            }
 
             final int formatCount = lib.cnokhwa_device_formats_count(devIndex);
 
